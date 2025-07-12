@@ -5,8 +5,8 @@ export const userApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: "http://localhost:3000" }), // Replace with your API base URL
   endpoints: (builder) => ({
     getUsers: builder.query({
-      query: () => ({
-        url: "/api/users/123",
+      query: (params) => ({
+        url: `/api/users/${params.id}`,
         method: "GET",
       }),
     }),

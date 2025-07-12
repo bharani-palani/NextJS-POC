@@ -45,7 +45,7 @@ app.prepare().then(async () => {
         return res.status(500).json({ error: "Database connection error" });
       }
       connection.query(
-        "SELECT count(*) as count, log_email as email FROM `logs` GROUP BY log_email order by count desc",
+        "SELECT count(*) as count, log_email as email FROM `logs` where log_source = 'self' and log_user_id != 'XXX' GROUP BY log_email order by count desc",
         (error, results) => {
           connection.release(); // Release the connection back to the pool
 
