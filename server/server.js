@@ -3,6 +3,10 @@ import next from "next";
 import bodyParser from "body-parser";
 import mysql from "mysql";
 import Cors from "cors";
+import pkf from "@next/env";
+
+const { loadEnvConfig } = pkf;
+loadEnvConfig(process.cwd());
 
 export default function initMiddleware(middleware) {
   return (req, res) =>
@@ -24,20 +28,20 @@ const cors = initMiddleware(
     credentials: true,
   })
 );
-
 const dbConfig = {
-  host: "119.18.54.49",
-  user: "ledgerfg_admin",
-  password: "Bnisuccess@123",
-  database: "ledgerfg_app_production",
-  port: "3306",
+  host: process.env.DATABASE_HOST,
+  user: process.env.DATABASE_USER,
+  password: process.env.DATABASE_PASSWORD,
+  database: process.env.DATABASE_NAME,
+  port: process.env.DATABASE_PORT,
 };
+console.log("bbb", dbConfig);
 
 const pool = mysql.createPool(dbConfig);
 app.prepare().then(async () => {
   const server = express();
   server.use(bodyParser.json());
-  server.get("/api/users/:id", async (req, res) => {
+  server.get("/api/users", async (req, res) => {
     await cors(req, res);
     pool.getConnection((err, connection) => {
       if (err) {
@@ -58,6 +62,10 @@ app.prepare().then(async () => {
       );
     });
   });
+  //   server.post("/api/user", async (req, res) => {
+  //     await cors(req, res);
+  //     return res.status(200).json({ message: "Success" });
+  //   });
   server.all("/*any", (req, res) => {
     return handle(req, res);
   });
