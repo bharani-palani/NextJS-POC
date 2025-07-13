@@ -1,37 +1,31 @@
 "use client";
-import { useGetUsersQuery, useCreateUserMutation } from "./store/userApi";
+import { useGetUsersQuery } from "./store/userApi";
 
 export default function Home() {
   const { data, error, isLoading } = useGetUsersQuery({ id: 122 });
-  const [createUser] = useCreateUserMutation();
-
-  const handleCreateUser = async () => {
-    const newUser = { email: "newuser@example.com" };
-    await createUser(newUser);
-  };
 
   return (
     <div className="relative overflow-x-auto">
-      <p className="py-3 px-1 bg-green-100">
+      <div
+        className="py-3 px-1 flex items-center justify-between"
+        style={{ backgroundColor: "#c2d82e" }}
+      >
         <span className="text-blue-500 text-xs font-semibold me-2">
-          Ledgerely - Total signed in in users of count {process.env.USER}
+          <span className="block text-black text-base/8">
+            Ledgerely Telemetry
+          </span>
+          <span className="bg-blue-500 text-white text-xs font-small px-2 py-1 me-1 rounded-sm dark:bg-purple-900 dark:text-purple-300">
+            Total {data?.length} signed in users
+          </span>
         </span>
-        <span className="bg-blue-500 text-white text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-purple-900 dark:text-purple-300">
-          {data?.length}
-        </span>
-        <button
-          onClick={handleCreateUser}
-          className="px-3 py-2 text-xs font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Create User
-        </button>
-      </p>
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-dark-500 dark:text-gray-400">
         <thead className="text-xs uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th className="px-4 py-2">#</th>
+            <th className="px-4 py-2">Name</th>
             <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Count</th>
+            <th className="px-4 py-2">Login Count</th>
           </tr>
         </thead>
         <tbody>
@@ -48,13 +42,19 @@ export default function Home() {
               </td>
             </tr>
           ) : (
-            data?.map((user: { count: number; email: string }, i: number) => (
-              <tr key={user.email}>
-                <td className="px-4 py-2">{i + 1}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                <td className="px-4 py-2">{user.count}</td>
-              </tr>
-            ))
+            data?.map(
+              (
+                user: { count: number; email: string; name: string },
+                i: number
+              ) => (
+                <tr key={user.email}>
+                  <td className="px-4 py-2">{i + 1}</td>
+                  <td className="px-4 py-2">{user.name}</td>
+                  <td className="px-4 py-2">{user.email}</td>
+                  <td className="px-4 py-2">{user.count}</td>
+                </tr>
+              )
+            )
           )}
         </tbody>
       </table>
